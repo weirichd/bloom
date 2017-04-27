@@ -1,24 +1,28 @@
 #include <check.h>
 
-#include "../src/bloom.h"
+#include "../src/bit_field.h"
 
-START_TEST(check_is_installed_and_testing_code) {
-    int expected = 1;
-    int actual = foo();
+START_TEST(bit_field_set_bit_will_set_the_first_bit) {
 
-    ck_assert_int_eq(actual, expected);
+    char actual[2] = {0};
+    long int bit_to_set = 0;
+    char expected[16] = {0x01, 0x00};
+
+    bit_field_set_bit(actual, bit_to_set);
+
+    ck_assert_int_eq(memcmp(expected, actual, 2), 0);
 } END_TEST
 
 int main() {
     Suite *s = suite_create("Bloom Filter");
-    TCase *tc = tcase_create("Bloom Filter");
+    TCase *tc_bit_field = tcase_create("Bit Field");
     SRunner *sr = srunner_create(s);
 
     int num_fails;
 
-    suite_add_tcase(s, tc);
+    suite_add_tcase(s, tc_bit_field);
 
-    tcase_add_test(tc, check_is_installed_and_testing_code);
+    tcase_add_test(tc_bit_field, bit_field_set_bit_will_set_the_first_bit);
 
     srunner_run_all(sr, CK_NORMAL);
     num_fails = srunner_ntests_failed(sr);
