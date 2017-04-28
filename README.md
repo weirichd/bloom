@@ -27,4 +27,4 @@ The first component I decided to implement was the bit field. We need the abilit
   </tr>
 </table>
 
-In order to force good memory alignment, I later switched to a `unsigned long int` array instead of a `char` array, but used the same basic idea.
+In order to force good memory alignment, I later switched to a `uint64_t` array instead of a `char` array, but used the same basic idea.
