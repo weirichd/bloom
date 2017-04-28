@@ -32,3 +32,31 @@ In order to force good memory alignment, I later switched to a `uint64_t` array 
 ### Number of bits
 
 I decided to use 32 bit addresses for the bit field. This allows up to ~4 billion bits in the field. A Bloom filter of this size could contain approx 270 million entries with a 0.1% false positive rate.
+
+## Hash Functions
+
+We need a collection of hash functions which will map strings (`const char *`) to integers (`uint32_t`). For starters our basic requirements will be
+* The same hash function has different results for different strings (`hash(i, str1) != hash(i str2)`)
+* Different hash functions have differnt results for same strings (`hash(i, str) != hash(j, str)`).
+
+### The "Dumb" Hash
+
+As a first pass, I used the hash function
+
+```c
+uint32_t hash(int function_number, const char *str) {
+    uint32_t h1 = 0;
+    uint32_t h2 = 0;
+
+    while(*str) {
+        h1 += *str;
+        h2 ^= *str;
+
+        str++;
+    }
+
+    return h1 + h2*function_number;
+}
+```
+
+This collection of functions is **awful**, in that it does not satisfy the needs of a "good" hash function, but for the purposes of getting the basic Bloom filter up and running this will suffice.
