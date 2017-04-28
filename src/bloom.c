@@ -28,21 +28,30 @@ inline uint32_t next_power_of_two(uint32_t number) {
     return number;
 }
 
+inline size_t size_in_bytes(uint32_t size_in_bits) {
+    return size_in_bits >> 3;
+}
+
 bloom_filter_t *bloom_create(int capacity, double false_positive_rate) {
     bloom_filter_t *filter = calloc(1, sizeof(bloom_filter_t));
 
     filter->hash_function_count = ceil(calculate_required_number_of_hashes(false_positive_rate));
     filter->size = ceil(calculate_required_bit_field_size(capacity, false_positive_rate));
-
     filter->size = next_power_of_two(filter->size);
+
+    if(filter->size < sizeof(uint64_t) * 8)
+        filter->size = sizeof(uint64_t) * 8;
+
+    filter->bits = calloc(1, size_in_bytes(filter->size));
 
     return filter;
 }
 
 void bloom_destroy(bloom_filter_t *filter) {
+    free(filter->bits);
     free(filter);
 }
 
 int bloom_contains(const bloom_filter_t* bloom, const char* str) {
-    return 0;
+    return bloom->bits[0];
 }
