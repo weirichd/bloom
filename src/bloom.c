@@ -42,3 +42,7 @@ bloom_filter_t *bloom_create(int capacity, double false_positive_rate) {
 void bloom_destroy(bloom_filter_t *filter) {
     free(filter);
 }
+
+int bloom_contains(const bloom_filter_t* bloom, const char* str) {
+    return 0;
+}

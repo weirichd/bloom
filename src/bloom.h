@@ -10,6 +10,8 @@ typedef struct {
 
 bloom_filter_t *bloom_create(int capacity, double false_positive_rate);
 
+int bloom_contains(const bloom_filter_t* bloom, const char* str);
+
 void bloom_destroy(bloom_filter_t *filter);
 
 #endif // BLOOM_H
