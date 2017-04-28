@@ -15,11 +15,26 @@ inline double calculate_required_bit_field_size(int capacity, double false_posit
     return - capacity * log(false_positive_rate) / (ln_2 * ln_2);
 }
 
+// source: http://graphics.stanford.edu/~seander/bithacks.html#RoundUpPowerOf2
+inline uint32_t next_power_of_two(uint32_t number) {
+    number--;
+    number |= number >> 1;
+    number |= number >> 2;
+    number |= number >> 4;
+    number |= number >> 8;
+    number |= number >> 16;
+    number++;
+
+    return number;
+}
+
 bloom_filter_t *bloom_create(int capacity, double false_positive_rate) {
     bloom_filter_t *filter = calloc(1, sizeof(bloom_filter_t));
 
     filter->hash_function_count = ceil(calculate_required_number_of_hashes(false_positive_rate));
     filter->size = ceil(calculate_required_bit_field_size(capacity, false_positive_rate));
+
+    filter->size = next_power_of_two(filter->size);
 
     return filter;
 }
