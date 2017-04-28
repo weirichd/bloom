@@ -9,6 +9,7 @@ TEST_SOURCE=bloom_test.c
 TEST_OBJ=$(addprefix $(BUILD_DIR)/, $(TEST_SOURCE:.c=.o))
 
 PROD_LIBRARY=$(BUILD_DIR)/bloom.a
+PROD_HEADER_PATH=../src/
 
 TARGET=$(BUILD_DIR)/bloom_test
 
@@ -18,4 +19,4 @@ $(TARGET): $(TEST_OBJ) $(PROD_LIBRARY)
 	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
 $(BUILD_DIR)/%.o: %.c
-	$(CC) $(CFLAGS) -c -o $@ $<
+	$(CC) $(CFLAGS) -c -o $@ $< -I$(PROD_HEADER_PATH)

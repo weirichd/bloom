@@ -14,7 +14,7 @@ $(BUILD_DIR):
 	mkdir $@
 
 $(TARGET): $(OBJECTS)
-	ar rcs $@ $<
+	ar rcs $@ $^
 
 $(BUILD_DIR)/%.o: %.c %.h
 	$(CC) $(CFLAGS) -c -o $(BUILD_DIR)/$@ $<
