@@ -28,3 +28,7 @@ The first component I decided to implement was the bit field. We need the abilit
 </table>
 
 In order to force good memory alignment, I later switched to a `uint64_t` array instead of a `char` array, but used the same basic idea.
+
+### Number of bits
+
+I decided to use 32 bit addresses for the bit field. This allows up to ~4 billion bits in the field. A Bloom filter of this size could contain approx 270 million entries with a 0.1% false positive rate.

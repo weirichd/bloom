@@ -5,7 +5,7 @@
 
 START_TEST(bit_field_set_bit_will_set_the_zeroth_bit) {
     uint64_t actual[2] = { };
-    uint64_t bit_to_set = 0;
+    uint32_t bit_to_set = 0;
     uint64_t expected[2] = {1, 0};
 
     bit_field_set_bit(actual, bit_to_set);
@@ -15,8 +15,8 @@ START_TEST(bit_field_set_bit_will_set_the_zeroth_bit) {
 
 START_TEST(bit_field_set_bit_will_set_the_hundredth_bit) {
     uint64_t actual[2] = { };
-    uint64_t bit_to_set = 100;
-    uint64_t shift_ammount = 100 - 64;
+    uint32_t bit_to_set = 100;
+    int shift_ammount = 100 - 64;
     uint64_t expected[2] = {0, 1 << shift_ammount};
 
     bit_field_set_bit(actual, bit_to_set);
@@ -26,7 +26,7 @@ START_TEST(bit_field_set_bit_will_set_the_hundredth_bit) {
 
 START_TEST(bit_field_set_bit_will_leave_already_set_bits_as_they_were) {
     uint64_t actual[2] = {1 << 30, 0};
-    uint64_t bit_to_set = 0;
+    uint32_t bit_to_set = 0;
     uint64_t expected[2] = {1 << 30 | 1, 0};
 
     bit_field_set_bit(actual, bit_to_set);
@@ -36,8 +36,7 @@ START_TEST(bit_field_set_bit_will_leave_already_set_bits_as_they_were) {
 
 START_TEST(bit_field_is_set_will_return_false_when_a_field_is_not_set) {
     uint64_t bits[2] = {2, 0};
-
-    uint64_t bit_to_check = 0;
+    uint32_t bit_to_check = 0;
 
     int result = bit_field_is_set(bits, bit_to_check);
 
@@ -46,8 +45,7 @@ START_TEST(bit_field_is_set_will_return_false_when_a_field_is_not_set) {
 
 START_TEST(bit_field_is_set_will_return_true_when_a_field_is_not_set) {
     uint64_t bits[2] = {3, 0};
-
-    uint64_t bit_to_check = 1;
+    uint32_t bit_to_check = 1;
 
     int result = bit_field_is_set(bits, bit_to_check);
 
