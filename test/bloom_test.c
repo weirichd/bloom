@@ -76,6 +76,19 @@ START_TEST(bloom_contains_returns_true_when_filter_is_totally_full) {
     ck_assert_msg(result, "The filled filter reported that it did not contain the string \"%s\".", string);
 } END_TEST
 
+START_TEST(bloom_contains_returns_true_when_a_string_has_been_added_to_the_filter) {
+    int capacity = 10;
+    double false_positive_rate = 0.1;
+    bloom_filter_t *bloom = bloom_create(capacity, false_positive_rate);
+    char *string = "David";
+
+    bloom_put(bloom, string);
+    int result = bloom_contains(bloom, string);
+    bloom_destroy(bloom);
+
+    ck_assert_msg(result, "The filter reported that it did not contain the string \"%s\" even though it had been added.", string);
+} END_TEST
+
 TCase *create_bloom_test_case() {
     TCase *tc= tcase_create("Bloom");
 
@@ -84,6 +97,7 @@ TCase *create_bloom_test_case() {
     tcase_add_test(tc, bloom_create_gives_a_filter_size_at_least_the_size_of_one_uint64_t);
     tcase_add_test(tc, bloom_contains_returns_false_when_filter_is_empty);
     tcase_add_test(tc, bloom_contains_returns_true_when_filter_is_totally_full);
+    tcase_add_test(tc, bloom_contains_returns_true_when_a_string_has_been_added_to_the_filter);
 
     return tc;
 }

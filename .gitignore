@@ -37,3 +37,6 @@ build/
 
 # vim swap files
 *.swp
+
+# ctags
+tags
