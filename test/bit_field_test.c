@@ -16,8 +16,7 @@ START_TEST(bit_field_set_bit_will_set_the_zeroth_bit) {
 START_TEST(bit_field_set_bit_will_set_the_hundredth_bit) {
     uint64_t actual[2] = { };
     uint32_t bit_to_set = 100;
-    int shift_ammount = 100 - 64;
-    uint64_t expected[2] = {0, 1 << shift_ammount};
+    uint64_t expected[2] = {0, 1ULL << 36};
 
     bit_field_set_bit(actual, bit_to_set);
 

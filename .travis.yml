@@ -9,4 +9,4 @@ before_install:
     - docker build -t bloom_filter .
 
 script:
-    - docker run -v $PWD:/src/app -w=/src/app bloom_filter /bin/bash -c 'make && make run_tests'
+    - docker run -v $PWD:/src/app -w=/src/app bloom_filter /bin/bash -c 'make && make run_tests && make mem_test'

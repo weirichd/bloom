@@ -16,7 +16,7 @@ TARGET=$(BUILD_DIR)/bloom_test
 all: $(TARGET)
 
 $(TARGET): $(TEST_OBJ) $(PROD_LIBRARY)
-	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS) -lm
 
 $(BUILD_DIR)/%.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $< -I$(PROD_HEADER_PATH)
