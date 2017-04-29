@@ -20,7 +20,7 @@ tags:
 	ctags -R --exclude=Makefile
 
 run_tests:	
-	./$(BUILD_DIR)/bloom_test
+	./$(BUILD_DIR)/test/bloom_test
 
 mem_test:
-	CK_FORK=no valgrind $(VALGRIND_FLAGS) ./$(BUILD_DIR)/bloom_test
+	CK_FORK=no valgrind $(VALGRIND_FLAGS) ./$(BUILD_DIR)/test/bloom_test

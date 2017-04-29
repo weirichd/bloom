@@ -1,22 +1,27 @@
 .SUFFIXES:
 
 BUILD_DIR:=../$(BUILD_DIR)
+TEST_DIR=$(BUILD_DIR)/test
+OBJ_DIR=$(TEST_DIR)/objects
 
 LIBS=check
 LDFLAGS+=`pkg-config --cflags --libs $(LIBS)`
 
 TEST_SOURCE=$(wildcard *.c)
-TEST_OBJ=$(addprefix $(BUILD_DIR)/, $(TEST_SOURCE:.c=.o))
+TEST_OBJ=$(addprefix $(OBJ_DIR)/, $(TEST_SOURCE:.c=.o))
 
 PROD_LIBRARY=$(BUILD_DIR)/bloom.a
 PROD_HEADER_PATH=../src/
 
-TARGET=$(BUILD_DIR)/bloom_test
+TARGET=$(TEST_DIR)/bloom_test
 
-all: $(TARGET)
+all: $(BUILD_DIR) $(TEST_DIR) $(OBJ_DIR) $(TARGET)
+
+$(BUILD_DIR) $(TEST_DIR) $(OBJ_DIR):
+	mkdir $@
 
 $(TARGET): $(TEST_OBJ) $(PROD_LIBRARY)
 	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS) -lm
 
-$(BUILD_DIR)/%.o: %.c
+$(OBJ_DIR)/%.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $< -I$(PROD_HEADER_PATH)
