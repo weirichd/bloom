@@ -8,7 +8,7 @@ Run the command `make && make run_tests` from the root directory.
 
 # Implementation Notes and Thoughts
 
-This kata poses several interesting challanges. Here I log some of the thinking that went into specific implementation decisions.
+This kata poses several interesting challenges. Here I log some of the thinking that went into specific implementation decisions.
 
 ## The Bit Field
 
@@ -37,7 +37,9 @@ I decided to use 32 bit addresses for the bit field. This allows up to ~4 billio
 
 We need a collection of hash functions which will map strings (`const char *`) to integers (`uint32_t`). For starters our basic requirements will be
 * The same hash function has different results for different strings (`hash(i, str1) != hash(i str2)`)
-* Different hash functions have differnt results for same strings (`hash(i, str) != hash(j, str)`).
+* Different hash functions have different results for same strings (`hash(i, str) != hash(j, str)`).
+
+Of course, the hash functions will a necessarily have collisions, but we'll ignore this complication for the moment.
 
 ### The "Dumb" Hash
 
@@ -60,3 +62,10 @@ uint32_t hash(int function_number, const char *str) {
 ```
 
 This collection of functions is **awful**, in that it does not satisfy the needs of a "good" hash function, but for the purposes of getting the basic Bloom filter up and running this will suffice.
+
+## Should we write deterministic tests for the existence of false positives?
+
+This seemed like an interesting question and I have seen implementation of the Bloom filter which did this. I decided to not write this kind of test however, because
+* It would require engineering collisions, which, while not the most complicated thing in the world, would at least take a little effort
+* The test would need to be rewritten every time the has function implementation changed.
+These complications could be avoided by mocking the hash functions, but at that point what are you even testing which isn't already under test?
