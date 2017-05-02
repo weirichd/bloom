@@ -116,7 +116,29 @@ START_TEST(bloom_load_dictionary_will_put_a_single_word_into_the_filter) {
 	int result = bloom_contains(bloom, word_in_dictionary);
 	bloom_destroy(bloom);
 
-	ck_assert_int_eq(result, 1);
+	ck_assert(result);
+
+} END_TEST
+
+START_TEST(bloom_load_dictionary_will_put_two_words_into_the_filter) {
+    int capacity = 10;
+    double false_positive_rate = 0.1;
+    bloom_filter_t *bloom = bloom_create(capacity, false_positive_rate);
+	const char *dictionary_file_name = "test_dict.txt";
+	char dictionary_file_path[128] = { };
+	strcat(dictionary_file_path, test_file_directory);
+	strcat(dictionary_file_path, "/");
+	strcat(dictionary_file_path, dictionary_file_name);
+	const char *word_in_dictionary1 = "hello";
+	const char *word_in_dictionary2 = "world";
+
+	bloom_load_dictionary(bloom, dictionary_file_path);
+	int result1 = bloom_contains(bloom, word_in_dictionary1);
+	int result2 = bloom_contains(bloom, word_in_dictionary2);
+	bloom_destroy(bloom);
+
+	ck_assert_msg(result1, "The filter did not contain the word '%s'", word_in_dictionary1);
+	ck_assert_msg(result2, "The filter did not contain the word '%s'", word_in_dictionary2);
 
 } END_TEST
 
@@ -130,6 +152,7 @@ TCase *create_bloom_test_case() {
     tcase_add_test(tc, bloom_contains_returns_true_when_filter_is_totally_full);
     tcase_add_test(tc, bloom_contains_returns_true_when_a_string_has_been_added_to_the_filter);
     tcase_add_test(tc, bloom_load_dictionary_will_put_a_single_word_into_the_filter);
+    tcase_add_test(tc, bloom_load_dictionary_will_put_two_words_into_the_filter);
 
     return tc;
 }

@@ -68,4 +68,5 @@ This collection of functions is **awful**, in that it does not satisfy the needs
 This seemed like an interesting question and I have seen implementation of the Bloom filter which did this. I decided to not write this kind of test however, because
 * It would require engineering collisions, which, while not the most complicated thing in the world, would at least take a little effort
 * The test would need to be rewritten every time the has function implementation changed.
+
 These complications could be avoided by mocking the hash functions, but at that point what are you even testing which isn't already under test?

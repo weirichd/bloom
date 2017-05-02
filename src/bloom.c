@@ -88,7 +88,7 @@ void bloom_load_dictionary(bloom_filter_t *bloom, const char *file_path) {
 
 	char word[10] = {0};
 
-	if(fgets(word, sizeof(word), file)) {
+	while(fgets(word, sizeof(word), file)) {
 		remove_newline(word);
 		bloom_put(bloom, word);
 	}
