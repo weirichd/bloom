@@ -4,6 +4,8 @@ BUILD_DIR:=../$(BUILD_DIR)
 TEST_DIR=$(BUILD_DIR)/test
 OBJ_DIR=$(TEST_DIR)/objects
 
+TEST_FILE_DIR=$(CURDIR)/files
+
 LIBS=check
 LDFLAGS+=`pkg-config --cflags --libs $(LIBS)`
 
@@ -24,4 +26,4 @@ $(TARGET): $(TEST_OBJ) $(PROD_LIBRARY)
 	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS) -lm
 
 $(OBJ_DIR)/%.o: %.c
-	$(CC) $(CFLAGS) -c -o $@ $< -I$(PROD_HEADER_PATH)
+	$(CC) $(CFLAGS) -c -D TEST_FILE_DIR="$(TEST_FILE_DIR)" -o $@ $< -I$(PROD_HEADER_PATH)
