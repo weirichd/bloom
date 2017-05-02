@@ -81,12 +81,14 @@ inline void remove_newline(char *str) {
 	str[strcspn(str, "\n")] = '\0';
 }
 
+#define MAX_WORD_LENGTH 64
+
 void bloom_load_dictionary(bloom_filter_t *bloom, const char *file_path) {
 	FILE *file;
 
 	file = fopen(file_path, "r");
 
-	char word[10] = {0};
+	char word[MAX_WORD_LENGTH] = {0};
 
 	while(fgets(word, sizeof(word), file)) {
 		remove_newline(word);
