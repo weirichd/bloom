@@ -4,6 +4,18 @@
 
 #include <check.h>
 
+#include <stdio.h>
+
+#ifdef TEST_FILE_DIR
+
+#define _STRINGIFY(str) #str
+#define STRINGIFY(str) _STRINGIFY(str)
+const char *test_file_directory = STRINGIFY(TEST_FILE_DIR); // TEST_FILE_DIR defined on the command line at compile time
+
+#else
+const char *test_file_directory = ".";
+#endif
+
 START_TEST(bloom_create_gives_a_filter_with_good_values_for__bit_field_size_and_number_of_hashes) {
     int capacity = 10;
     double false_positive_rate = 0.1;
@@ -89,6 +101,78 @@ START_TEST(bloom_contains_returns_true_when_a_string_has_been_added_to_the_filte
     ck_assert_msg(result, "The filter reported that it did not contain the string \"%s\" even though it had been added.", string);
 } END_TEST
 
+START_TEST(bloom_contains_returns_false_when_a_similar_string_has_been_added_to_the_filter) {
+    int capacity = 10;
+    double false_positive_rate = 0.01; // We use a much lower false positve rate since we want to avoid that for this test.
+    bloom_filter_t *bloom = bloom_create(capacity, false_positive_rate);
+    char *string1 = "David";
+    char *string2 = "David ";
+
+    bloom_put(bloom, string1);
+    int result = bloom_contains(bloom, string2);
+    bloom_destroy(bloom);
+
+    ck_assert_msg(!result, "The filter reported that it contain the string \"%s\" even though it did not contain it.", string2);
+} END_TEST
+
+START_TEST(bloom_load_dictionary_will_put_a_single_word_into_the_filter) {
+    int capacity = 10;
+    double false_positive_rate = 0.1;
+    bloom_filter_t *bloom = bloom_create(capacity, false_positive_rate);
+	const char *dictionary_file_name = "test_dict.txt";
+	char dictionary_file_path[128] = { };
+	strcat(dictionary_file_path, test_file_directory);
+	strcat(dictionary_file_path, "/");
+	strcat(dictionary_file_path, dictionary_file_name);
+	const char *word_in_dictionary = "hello";
+
+	bloom_load_dictionary(bloom, dictionary_file_path);
+	int result = bloom_contains(bloom, word_in_dictionary);
+	bloom_destroy(bloom);
+
+	ck_assert(result);
+
+} END_TEST
+
+START_TEST(bloom_load_dictionary_will_put_two_words_into_the_filter) {
+    int capacity = 10;
+    double false_positive_rate = 0.1;
+    bloom_filter_t *bloom = bloom_create(capacity, false_positive_rate);
+	const char *dictionary_file_name = "test_dict.txt";
+	char dictionary_file_path[128] = { };
+	strcat(dictionary_file_path, test_file_directory);
+	strcat(dictionary_file_path, "/");
+	strcat(dictionary_file_path, dictionary_file_name);
+	const char *word_in_dictionary1 = "hello";
+	const char *word_in_dictionary2 = "world";
+
+	bloom_load_dictionary(bloom, dictionary_file_path);
+	int result1 = bloom_contains(bloom, word_in_dictionary1);
+	int result2 = bloom_contains(bloom, word_in_dictionary2);
+	bloom_destroy(bloom);
+
+	ck_assert_msg(result1, "The filter did not contain the word '%s'", word_in_dictionary1);
+	ck_assert_msg(result2, "The filter did not contain the word '%s'", word_in_dictionary2);
+} END_TEST
+
+START_TEST(bloom_load_dictionary_can_load_a_very_long_word) {
+    int capacity = 10;
+    double false_positive_rate = 0.01;
+    bloom_filter_t *bloom = bloom_create(capacity, false_positive_rate);
+	const char *dictionary_file_name = "test_dict.txt";
+	char dictionary_file_path[128] = { };
+	strcat(dictionary_file_path, test_file_directory);
+	strcat(dictionary_file_path, "/");
+	strcat(dictionary_file_path, dictionary_file_name);
+	const char *word_in_dictionary = "pseudopseudohypoparathyroidism"; // Longest word in the Oxford English Dictionary, Source: https://en.wikipedia.org/wiki/Longest_word_in_English#Major_dictionaries
+
+	bloom_load_dictionary(bloom, dictionary_file_path);
+	int result = bloom_contains(bloom, word_in_dictionary);
+	bloom_destroy(bloom);
+
+	ck_assert_msg(result, "The filter did not contain the word '%s'", word_in_dictionary);
+} END_TEST
+
 TCase *create_bloom_test_case() {
     TCase *tc= tcase_create("Bloom");
 
@@ -98,6 +182,10 @@ TCase *create_bloom_test_case() {
     tcase_add_test(tc, bloom_contains_returns_false_when_filter_is_empty);
     tcase_add_test(tc, bloom_contains_returns_true_when_filter_is_totally_full);
     tcase_add_test(tc, bloom_contains_returns_true_when_a_string_has_been_added_to_the_filter);
+    tcase_add_test(tc, bloom_contains_returns_false_when_a_similar_string_has_been_added_to_the_filter);
+    tcase_add_test(tc, bloom_load_dictionary_will_put_a_single_word_into_the_filter);
+    tcase_add_test(tc, bloom_load_dictionary_will_put_two_words_into_the_filter);
+    tcase_add_test(tc, bloom_load_dictionary_can_load_a_very_long_word);
 
     return tc;
 }

@@ -5,7 +5,9 @@
 
 #include <math.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 const double ln_2 = 0.69314718055994530941723212145817656807550013436025525412;
 
@@ -73,4 +75,25 @@ int bloom_contains(const bloom_filter_t* bloom, const char* str) {
     }
 
     return found;
+}
+
+inline void remove_newline(char *str) {
+	str[strcspn(str, "\n")] = '\0';
+}
+
+#define MAX_WORD_LENGTH 64
+
+void bloom_load_dictionary(bloom_filter_t *bloom, const char *file_path) {
+	FILE *file;
+
+	file = fopen(file_path, "r");
+
+	char word[MAX_WORD_LENGTH] = {0};
+
+	while(fgets(word, sizeof(word), file)) {
+		remove_newline(word);
+		bloom_put(bloom, word);
+	}
+
+	fclose(file);
 }

@@ -8,11 +8,16 @@ Run the command `make && make run_tests` from the root directory.
 
 # Implementation Notes and Thoughts
 
-This kata poses several interesting challenges. Here I log some of the thinking that went into specific implementation decisions.
+This kata poses several interesting challenges.
+Here I log some of the thinking that went into specific implementation decisions.
 
 ## The Bit Field
 
-The first component I decided to implement was the bit field. We need the ability to set bits in some portion of memory and then check to see if those bits were set. We have to make a choice for what we mean by "the 3rd bit" in the field. I initially decided that within a byte, bits would be counted from right to left, (i.e. least significant to most significant), and then bytes would be counted in memory order. So a 3 byte bit field would be counted as
+The first component I decided to implement was the bit field.
+We need the ability to set bits in some portion of memory and then check to see if those bits were set.
+We have to make a choice for what we mean by "the 3rd bit" in the field.
+I initially decided that within a byte, bits would be counted from right to left, (i.e. least significant to most significant), and then bytes would be counted in memory order.
+So a 3 byte bit field would be counted as
 
 <table>
   <tr>
@@ -35,7 +40,8 @@ I decided to use 32 bit addresses for the bit field. This allows up to ~4 billio
 
 ## Hash Functions
 
-We need a collection of hash functions which will map strings (`const char *`) to integers (`uint32_t`). For starters our basic requirements will be
+We need a collection of hash functions which will map strings (`const char *`) to integers (`uint32_t`).
+For starters our basic requirements will be
 * The same hash function has different results for different strings (`hash(i, str1) != hash(i str2)`)
 * Different hash functions have different results for same strings (`hash(i, str) != hash(j, str)`).
 
@@ -63,9 +69,43 @@ uint32_t hash(int function_number, const char *str) {
 
 This collection of functions is **awful**, in that it does not satisfy the needs of a "good" hash function, but for the purposes of getting the basic Bloom filter up and running this will suffice.
 
+### A need to slightly improve
+While writing a test which enforced the behavior that long words (in this case, 30 letters) could be read from the dictionary file I encountered some bad behavior.
+The test loads the dictionary, and then checks that the word can be found.
+Surprisingly, without even adding the word to the dictionary file the test passed right away *even though it should have failed.*
+I suspected this was being caused by a false positive, so I wrote another test which adds a word, and then checks to see if a very similar word is **not** in the dictionary.
+This second test failed, confirming my suspicions.
+Decreasing the false positive rate of the filter had no effect, leading me to the conclusion that the dumb collection of hash functions were the culprit.
+I altered the hash function collection slightly to a second iteration:
+
+```c
+const int a_big_prime_number = 0x0600BC09;
+
+uint32_t hash(int function_number, const char *str) {
+    uint32_t h1 = 0;
+    uint32_t h2 = a_big_prime_number;
+
+    while(*str) {
+        h1 += *str;
+        h2 ^= *str << 5;
+
+        str++;
+    }
+
+    return h1 + h2*function_number;
+}
+```
+
+I hadn't anticipated that I would need to alter the hash functions until I had reached the performance testing stage of development.
+Afterall, even though the functions were pretty bad I assumed I would avoid collisions well enough in small early tests.
+Yet, interestingly enough, a rather simple test forced this change.
+This illustrates how important having "good" uniform hash functions are to the false positive rate of the Bloom filter.
+After changing the hash function in this way, my similar word test passed and the long word test failed, which is the behavior I expected in the first place.
+
 ## Should we write deterministic tests for the existence of false positives?
 
 This seemed like an interesting question and I have seen implementation of the Bloom filter which did this. I decided to not write this kind of test however, because
 * It would require engineering collisions, which, while not the most complicated thing in the world, would at least take a little effort
 * The test would need to be rewritten every time the has function implementation changed.
+
 These complications could be avoided by mocking the hash functions, but at that point what are you even testing which isn't already under test?
