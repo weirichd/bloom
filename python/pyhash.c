@@ -21,6 +21,6 @@ static PyMethodDef module_methods[] = {
     { NULL, NULL, 0, NULL }
 };
 
-PyMODINIT_FUNC inithash() {
+PyMODINIT_FUNC inithash(void) {
     Py_InitModule("hash", module_methods);
 }

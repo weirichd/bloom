@@ -1,4 +1,4 @@
-FROM ubuntu:14.04
+FROM python:2.7
 
 RUN apt-get update && apt-get install -y \
    build-essential \
@@ -7,7 +7,8 @@ RUN apt-get update && apt-get install -y \
    libtool \
    git \
    valgrind \
-   pkg-config
+   pkg-config \
+   python-dev
 
 RUN curl -sL https://github.com/libcheck/check/releases/download/0.11.0/check-0.11.0.tar.gz | tar xz
 

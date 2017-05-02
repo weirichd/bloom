@@ -11,7 +11,12 @@ OBJECTS=$(OBJ_DIR)/hash.o pyhash.o
 all: $(TARGET)
 
 $(TARGET): $(OBJECTS)
-	$(CC) -shared -o $@ $^ -lpython
+	$(CC) -shared -o $@ $^ `python-config --ldflags`
 
 pyhash.o: pyhash.c
-	$(CC) $(CFLAGS) -I$(PYTHON_INLCUDE_PATH) -I../src -c -o $@ $<
+	$(CC) $(CFLAGS) -fPIC `python-config --cflags` -I../src -c -o $@ $<
+
+.PHONY: clean
+
+clean:
+	rm $(TARGET) pyhash.o
