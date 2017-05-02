@@ -1,4 +1,4 @@
-SUBDIRS=src test python
+SUBDIRS=src test
 export BUILD_DIR=build
 
 VALGRIND_FLAGS=--leak-check=full

@@ -1,11 +1,14 @@
-import hash
+import sys
+sys.path.append("../build")
+
+import pybloom
 import matplotlib.pyplot as plt
 
 f = open("/usr/share/dict/words")
 
 arr = []
 for line in f:
-    h = hash.hash(10, line)
+    h = pybloom.hash(10, line)
     arr.append(h)
 
 binsize = (max(arr) - min(arr)) / 100
