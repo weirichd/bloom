@@ -12,7 +12,7 @@ OBJECTS=$(addprefix $(OBJ_DIR)/, $(SOURCES:.c=.o))
 all: $(TARGET)
 
 $(TARGET): $(OBJECTS) $(C_LIB)
-	$(CC) -shared -o $@ $^ `python-config --ldflags`
+	$(CC) -shared $(CFLAGS) -o $@ $^ `python-config --ldflags`
 
 $(OBJ_DIR)/%.o: %.c
-	$(CC) $(CFLAGS) -fPIC `python-config --cflags` -I.. -c -o $@ $<
+	$(CC) $(CFLAGS) `python-config --cflags` -I.. -c -o $@ $<
