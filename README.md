@@ -4,7 +4,32 @@
 Implementation of the code kata http://codekata.com/kata/kata05-bloom-filters/
 
 ## To build and run the tests
-Run the command `make && make run_tests` from the root directory.
+In the root directory, build a Docker image with the command
+
+`docker build -t bloom_filter .`
+
+To build and run C tests, use the command
+`docker run -v $PWD:/src/app -w=/src/app bloom_filter /bin/bash -c 'make && make mem_test'`
+
+To run Python (statistics) tests, run the command
+
+`docker run -v $PWD:/src/app -w=/src/app bloom_filter /bin/bash -c 'cd python && python stats_test.py'`
+
+On Linux or Mac, you can use the provided convenience script docker_test_script.sh to execute these two commands in order.
+
+### Non-docker instructions
+
+Alternatively, you can run outside a docker if you prefer. You will need installed the following requirements:
+* gcc compatible compiler
+* libcheck (I used version 0.11.0. At the time of this writing if you run `apt-get install libcheck` it will install version 0.10.0. That may or may not work.)
+* Python 2.7
+* numpy
+* scipy
+* Optional: matplotlib for generating plots.
+
+Run the command `make && make run_tests` to build and test the C library.
+Run `python python/stats_test.py` to run the statistics tests.
+
 
 # Implementation Notes and Thoughts
 
@@ -124,8 +149,8 @@ While a more robust Python binding might be desired, I kept this to the bare min
 ## First Profile
 
 We want our hash functions to be uniform. So how do they stack up?
-Below is a histagram of the frequency of the hashes of words in `/usr/share/dict/words`, a file which on my machine contains 235886 words.
+Below is a histogram of the frequency of the hashes of words in `/usr/share/dict/words`, a file which on my machine contains 235886 words.
 
-![histagram of the first hash function](https://cloud.githubusercontent.com/assets/8379521/25832766/aaac3684-343a-11e7-82cd-c289aea8b4a7.png)
+![histogram of the first hash function](https://cloud.githubusercontent.com/assets/8379521/25832766/aaac3684-343a-11e7-82cd-c289aea8b4a7.png)
 
 Obviously there is room for improvement!

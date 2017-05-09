@@ -8,12 +8,16 @@ RUN apt-get update && apt-get install -y \
    git \
    valgrind \
    pkg-config \
-   python-dev
+   python-dev \
+   wamerican
 
 RUN curl -sL https://github.com/libcheck/check/releases/download/0.11.0/check-0.11.0.tar.gz | tar xz
 
-RUN cd check-0.11.0 && autoreconf --install && ./configure && make && make install && cd ..
+RUN cd check-0.11.0 && autoreconf --install && ./configure && make && make install
 
 RUN ldconfig
+
+RUN pip install numpy
+RUN pip install scipy
 
 CMD ["/bin/bash"]
