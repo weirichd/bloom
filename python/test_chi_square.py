@@ -10,7 +10,7 @@ with open("/usr/share/dict/words") as f:
 with open("random_strings.txt") as f:
     random_strings = f.readlines()
 
-class StatsTest(unittest.TestCase):
+class ChiSquareTest(unittest.TestCase):
 
     def test_given_english_hash_functions_individually_pass_chi_square_test_with_P_value_greater_than_point_0_5(self):
         for hash_number in range(20):
