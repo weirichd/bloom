@@ -12,7 +12,7 @@ LDFLAGS+=`pkg-config --cflags --libs $(LIBS)`
 TEST_SOURCE=$(wildcard *.c)
 TEST_OBJ=$(addprefix $(OBJ_DIR)/, $(TEST_SOURCE:.c=.o))
 
-PROD_LIBRARY=$(BUILD_DIR)/bloom.a
+PROD_LIBRARY=$(BUILD_DIR)/libbloom.a
 PROD_HEADER_PATH=../src/
 
 TARGET=$(TEST_DIR)/bloom_test

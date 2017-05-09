@@ -6,7 +6,7 @@ VALGRIND_FLAGS=--leak-check=full
 .PHONY: clean $(SUBDIRS) tags run_tests
 .SILENT: clean
 
-export CFLAGS=-std=c99 -Wall -Werror -O3 -g
+export CFLAGS=-std=c99 -Wall -Werror -O3 -g -fPIC
 
 all: $(SUBDIRS)
 

@@ -4,7 +4,35 @@
 Implementation of the code kata http://codekata.com/kata/kata05-bloom-filters/
 
 ## To build and run the tests
-Run the command `make && make run_tests` from the root directory.
+In the root directory, build a Docker image with the command
+
+`docker build -t bloom_filter .`
+
+To build and run C tests, use the command
+`docker run -v $PWD:/src/app -w=/src/app bloom_filter /bin/bash -c 'make && make mem_test'`
+
+To run Python (statistics) tests, run the command
+
+`docker run -v $PWD:/src/app -w=/src/app bloom_filter /bin/bash -c 'cd python && python stats_test.py'`
+
+On Linux or Mac, you can use the provided convenience script docker_test_script.sh to execute these two commands in order.
+
+### Non-docker instructions
+
+Alternatively, you can run outside a docker if you prefer. You will need installed the following requirements:
+* gcc compatible compiler
+* libcheck (I used version 0.11.0. At the time of this writing if you run `apt-get install libcheck` it will install version 0.10.0. That may or may not work.)
+* Python 2.7
+* numpy
+* scipy
+* Optional: matplotlib for generating plots.
+
+Run the command `make && make run_tests` to build and test the C library.
+Run `python python/stats_test.py` to run the statistics tests.
+
+## Random Strings
+
+Random strings provided by www.random.org
 
 # Implementation Notes and Thoughts
 
@@ -97,7 +125,7 @@ uint32_t hash(int function_number, const char *str) {
 ```
 
 I hadn't anticipated that I would need to alter the hash functions until I had reached the performance testing stage of development.
-Afterall, even though the functions were pretty bad I assumed I would avoid collisions well enough in small early tests.
+After all, even though the functions were pretty bad I assumed I would avoid collisions well enough in small early tests.
 Yet, interestingly enough, a rather simple test forced this change.
 This illustrates how important having "good" uniform hash functions are to the false positive rate of the Bloom filter.
 After changing the hash function in this way, my similar word test passed and the long word test failed, which is the behavior I expected in the first place.
@@ -109,3 +137,23 @@ This seemed like an interesting question and I have seen implementation of the B
 * The test would need to be rewritten every time the has function implementation changed.
 
 These complications could be avoided by mocking the hash functions, but at that point what are you even testing which isn't already under test?
+
+# Profiling and Performance
+
+With the core Bloom filter implemented, we are ready to start profiling.
+When creating a filter of a particular capacity and false positive rate, we assume that our hash functions are sufficiently uniform.
+We would like to verify this assumption.
+We also want to confirm that we are actually attaining the desired false positive rate (or lower).
+
+To do this, I decided to create Python wrappers for the Bloom library.
+I could then leverage all of Python's excellent math and graphing capabilities.
+While a more robust Python binding might be desired, I kept this to the bare minimum for what was required for me to do the needed profiling.
+
+## First Profile
+
+We want our hash functions to be uniform. So how do they stack up?
+Below is a histogram of the frequency of the hashes of words in `/usr/share/dict/words`, a file which on my machine contains 235886 words.
+
+![hashplot1](https://cloud.githubusercontent.com/assets/8379521/25866069/2e30d6da-34c3-11e7-8035-cb61ccc3d643.png)
+
+Obviously there is room for improvement!
