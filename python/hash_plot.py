@@ -5,6 +5,7 @@ sys.path.append(sys.path[0] + "/../build")
 import pybloom
 import matplotlib.pyplot as plt
 import pylab
+import numpy as np
 import scipy.stats
 
 f = open("/usr/share/dict/words")
@@ -18,7 +19,8 @@ for word in words:
     h = pybloom.hash(hash_number, word)
     arr.append(h)
 
-chi2, p = scipy.stats.chisquare(arr)
+hist, _ = np.histogram(arr, bins=100)
+chi2, p = scipy.stats.chisquare(hist)
 caption = 'chi^2 = {}\np = {}'.format(chi2, p)
 
 binsize = (max(arr) - min(arr)) / 50

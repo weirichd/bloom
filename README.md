@@ -151,6 +151,6 @@ While a more robust Python binding might be desired, I kept this to the bare min
 We want our hash functions to be uniform. So how do they stack up?
 Below is a histogram of the frequency of the hashes of words in `/usr/share/dict/words`, a file which on my machine contains 235886 words.
 
-![histogram of the first hash function](https://cloud.githubusercontent.com/assets/8379521/25832766/aaac3684-343a-11e7-82cd-c289aea8b4a7.png)
+![hashplot1](https://cloud.githubusercontent.com/assets/8379521/25836654/9df6cd02-3456-11e7-9d64-95304e35ab06.png)
 
 Obviously there is room for improvement!

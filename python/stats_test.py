@@ -4,6 +4,7 @@ sys.path.append(sys.path[0] + "/../build")
 
 import unittest
 import pybloom
+import numpy as np
 import scipy.stats
 
 class StatsTest(unittest.TestCase):
@@ -20,10 +21,10 @@ class StatsTest(unittest.TestCase):
             h = pybloom.hash(hash_number, word)
             arr.append(h)
 
-        chi2, p = scipy.stats.chisquare(arr)
+        hist, _ = np.histogram(arr, bins=100)
+        chi2, p = scipy.stats.chisquare(hist)
         
         self.assertGreaterEqual(p, 0.05)
-
 
 if __name__ == '__main__':
     unittest.main()
