@@ -27,7 +27,8 @@ static PyObject *bloom_create_wrapper(PyObject *self, PyObject *args) {
 
     filter = bloom_create(capacity, false_positive_rate);
 
-    return Py_BuildValue("i", 1);
+    Py_RETURN_NONE;
+//    return Py_None;
 }
 
 static PyObject *bloom_put_wrapper(PyObject *self, PyObject *args) {

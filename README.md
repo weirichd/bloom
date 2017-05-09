@@ -97,7 +97,7 @@ uint32_t hash(int function_number, const char *str) {
 ```
 
 I hadn't anticipated that I would need to alter the hash functions until I had reached the performance testing stage of development.
-Afterall, even though the functions were pretty bad I assumed I would avoid collisions well enough in small early tests.
+After all, even though the functions were pretty bad I assumed I would avoid collisions well enough in small early tests.
 Yet, interestingly enough, a rather simple test forced this change.
 This illustrates how important having "good" uniform hash functions are to the false positive rate of the Bloom filter.
 After changing the hash function in this way, my similar word test passed and the long word test failed, which is the behavior I expected in the first place.
@@ -109,3 +109,23 @@ This seemed like an interesting question and I have seen implementation of the B
 * The test would need to be rewritten every time the has function implementation changed.
 
 These complications could be avoided by mocking the hash functions, but at that point what are you even testing which isn't already under test?
+
+# Profiling and Performance
+
+With the core Bloom filter implemented, we are ready to start profiling.
+When creating a filter of a particular capacity and false positive rate, we assume that our hash functions are sufficiently uniform.
+We would like to verify this assumption.
+We also want to confirm that we are actually attaining the desired false positive rate (or lower).
+
+To do this, I decided to create Python wrappers for the Bloom library.
+I could then leverage all of Python's excellent math and graphing capabilities.
+While a more robust Python binding might be desired, I kept this to the bare minimum for what was required for me to do the needed profiling.
+
+## First Profile
+
+We want our hash functions to be uniform. So how do they stack up?
+Below is a histagram of the frequency of the hashes of words in `/usr/share/dict/words`, a file which on my machine contains 235886 words.
+
+![histagram of the first hash function](https://cloud.githubusercontent.com/assets/8379521/25832766/aaac3684-343a-11e7-82cd-c289aea8b4a7.png)
+
+Obviously there is room for improvement!

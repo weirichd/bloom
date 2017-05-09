@@ -40,3 +40,6 @@ build/
 
 # ctags
 tags
+
+# don't accidentally commit an image file
+*.png
