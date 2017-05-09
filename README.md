@@ -157,3 +157,39 @@ Below is a histogram of the frequency of the hashes of words in `/usr/share/dict
 ![hashplot1](https://cloud.githubusercontent.com/assets/8379521/25866069/2e30d6da-34c3-11e7-8035-cb61ccc3d643.png)
 
 Obviously there is room for improvement!
+
+## One-at-a-time Hash
+
+The third iteration of the hash function looks like this:
+
+```
+/* Bob Jenkins's One-at-a-time hash function source:
+ *     https://en.wikipedia.org/wiki/Jenkins_hash_function#one-at-a-time
+ *     http://www.burtleburtle.net/bob/hash/doobs.html
+ */
+uint32_t hash(int function_number, const char *str) {
+    uint32_t h1 = 0;
+    uint32_t h2 = a_big_prime_number;
+
+    while(*str) {
+        h1 += *str;
+        h1 += h1 << 10;
+        h1 ^= h1 >> 6;
+
+        h2 ^= *str << 5;
+
+        str++;
+    }
+    h1 += h1 << 3;
+    h1 ^= h1 >> 11;
+    h1 += h1 << 15;
+
+    return h1 + h2 *(function_number + 1);
+}
+```
+
+Here I incorporated the One-at-a-time hash written by Bob Jenkins for the `h1` component and removed the bad "addition hash." I also enforced that `h2` is always incorporated, even when `function_number = 0`.
+
+![hashplot2](https://cloud.githubusercontent.com/assets/8379521/25873273/dc8c7348-34db-11e7-9af1-1727f95affb1.png)
+
+As we can see, uniformity has improved tremendously!
