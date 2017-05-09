@@ -30,6 +30,9 @@ Alternatively, you can run outside a docker if you prefer. You will need install
 Run the command `make && make run_tests` to build and test the C library.
 Run `python python/stats_test.py` to run the statistics tests.
 
+## Random Strings
+
+Random strings provided by www.random.org
 
 # Implementation Notes and Thoughts
 
@@ -151,6 +154,6 @@ While a more robust Python binding might be desired, I kept this to the bare min
 We want our hash functions to be uniform. So how do they stack up?
 Below is a histogram of the frequency of the hashes of words in `/usr/share/dict/words`, a file which on my machine contains 235886 words.
 
-![hashplot1](https://cloud.githubusercontent.com/assets/8379521/25836654/9df6cd02-3456-11e7-9d64-95304e35ab06.png)
+![hashplot1](https://cloud.githubusercontent.com/assets/8379521/25866069/2e30d6da-34c3-11e7-8035-cb61ccc3d643.png)
 
 Obviously there is room for improvement!

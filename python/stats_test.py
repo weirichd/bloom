@@ -1,7 +1,4 @@
 import sys
-
-sys.path.append(sys.path[0] + "/../build")
-
 import unittest
 import pybloom
 import numpy as np
