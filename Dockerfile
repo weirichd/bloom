@@ -8,8 +8,7 @@ RUN apt-get update && apt-get install -y \
    git \
    valgrind \
    pkg-config \
-   python-dev \
-   wamerican
+   python-dev
 
 RUN curl -sL https://github.com/libcheck/check/releases/download/0.11.0/check-0.11.0.tar.gz | tar xz
 

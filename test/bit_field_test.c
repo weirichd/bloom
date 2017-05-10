@@ -42,7 +42,7 @@ START_TEST(bit_field_is_set_will_return_false_when_a_field_is_not_set) {
     ck_assert_int_eq(result, 0);
 } END_TEST
 
-START_TEST(bit_field_is_set_will_return_true_when_a_field_is_not_set) {
+START_TEST(bit_field_is_set_will_return_true_when_a_field_is_set) {
     uint64_t bits[2] = {3, 0};
     uint32_t bit_to_check = 1;
 
@@ -58,7 +58,7 @@ TCase *create_bit_field_test_case() {
     tcase_add_test(tc, bit_field_set_bit_will_set_the_hundredth_bit);
     tcase_add_test(tc, bit_field_set_bit_will_leave_already_set_bits_as_they_were);
     tcase_add_test(tc, bit_field_is_set_will_return_false_when_a_field_is_not_set);
-    tcase_add_test(tc, bit_field_is_set_will_return_true_when_a_field_is_not_set);
+    tcase_add_test(tc, bit_field_is_set_will_return_true_when_a_field_is_set);
 
     return tc;
 }

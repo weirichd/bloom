@@ -4,7 +4,7 @@ import pybloom
 import numpy as np
 import scipy.stats
 
-with open("/usr/share/dict/words") as f:
+with open("words.txt") as f:
     english_words = f.readlines()
 
 with open("random_strings.txt") as f:
