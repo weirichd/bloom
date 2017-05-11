@@ -101,20 +101,6 @@ START_TEST(bloom_contains_returns_true_when_a_string_has_been_added_to_the_filte
     ck_assert_msg(result, "The filter reported that it did not contain the string \"%s\" even though it had been added.", string);
 } END_TEST
 
-START_TEST(bloom_contains_returns_false_when_a_similar_string_has_been_added_to_the_filter) {
-    int capacity = 10;
-    double false_positive_rate = 0.01; // We use a much lower false positve rate since we want to avoid that for this test.
-    bloom_filter_t *bloom = bloom_create(capacity, false_positive_rate);
-    char *string1 = "David";
-    char *string2 = "David ";
-
-    bloom_put(bloom, string1);
-    int result = bloom_contains(bloom, string2);
-    bloom_destroy(bloom);
-
-    ck_assert_msg(!result, "The filter reported that it contain the string \"%s\" even though it did not contain it.", string2);
-} END_TEST
-
 START_TEST(bloom_load_dictionary_will_put_a_single_word_into_the_filter) {
     int capacity = 10;
     double false_positive_rate = 0.1;
@@ -182,7 +168,6 @@ TCase *create_bloom_test_case() {
     tcase_add_test(tc, bloom_contains_returns_false_when_filter_is_empty);
     tcase_add_test(tc, bloom_contains_returns_true_when_filter_is_totally_full);
     tcase_add_test(tc, bloom_contains_returns_true_when_a_string_has_been_added_to_the_filter);
-    tcase_add_test(tc, bloom_contains_returns_false_when_a_similar_string_has_been_added_to_the_filter);
     tcase_add_test(tc, bloom_load_dictionary_will_put_a_single_word_into_the_filter);
     tcase_add_test(tc, bloom_load_dictionary_will_put_two_words_into_the_filter);
     tcase_add_test(tc, bloom_load_dictionary_can_load_a_very_long_word);

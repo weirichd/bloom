@@ -5,22 +5,16 @@ import matplotlib.pyplot as plt
 # import pylab
 import numpy as np
 import scipy.stats
+import utils
 
 fig = plt.figure()
 
 def make_subplot(plot_title, file_path, position):
-    f = open(file_path)
-    words = f.readlines()
+    with open(file_path) as f:
+        words = f.readlines()
 
-    hash_number = 0
-
-    arr = []
-    for word in words:
-        h = pybloom.hash(hash_number, word)
-        arr.append(h)
-
-    hist, _ = np.histogram(arr, bins=100)
-    chi2, p = scipy.stats.chisquare(hist)
+    arr = utils.get_hashes(words, [0])
+    chi2, p = utils.calculate_p_value(arr)
 
     binsize = (max(arr) - min(arr)) / 50
 
@@ -42,8 +36,8 @@ def make_subplot(plot_title, file_path, position):
     plt.hist(arr, bins=range(min(arr), max(arr) + binsize, binsize))
 
 
-make_subplot('235,886 English Words', '/usr/share/dict/words', 211)
-make_subplot('17,000 Random Strings', 'random_strings.txt', 212)
+make_subplot('235,886 English Words', 'words.txt', 211)
+make_subplot('29,000 Random Strings', 'random_strings.txt', 212)
 
 plt.tight_layout()
 
